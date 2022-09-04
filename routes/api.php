@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\PostController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +16,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// 'a' => admin pages
+// 'c' => client pages
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::resource('/post', PostController::class);
+});
+
+Route::prefix('/c')->group(function () {
+    Route::get('/post', [PostController::class, 'clientIndex']);
+    Route::get('/post/{slug}', [PostController::class, 'clientShow']);
 });

@@ -13,7 +13,14 @@ class StorePostRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
+    }
+
+    protected function prepareForValidation() 
+    {
+        $this->merge([
+            'user_id' => $this->user()->id
+        ]);
     }
 
     /**
@@ -24,7 +31,13 @@ class StorePostRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'category_id' => 'exists:categories,id',
+            'user_id' => 'exists:users,id',
+            'title' => 'required|string|max:255',
+            'image_url' => 'required|string|max:255',
+            'summary' => 'required|string',
+            'content' => 'required|string',
+            'is_active' => 'required|boolean'
         ];
     }
 }

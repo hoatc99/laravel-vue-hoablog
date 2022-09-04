@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
+use Illuminate\Http\Request;
+
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+
+use App\Http\Resources\PostResource;
+
+use App\Models\Post;
 
 class PostController extends Controller
 {
@@ -13,9 +18,10 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = $request->user();
+        return PostResource::collection(Post::where('user_id', $user->id)->paginate(10));
     }
 
     /**
@@ -26,7 +32,9 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        $data = $request->validated();
+        $post = Post::create($data);
+        return new PostResource($post);
     }
 
     /**
@@ -35,9 +43,13 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show(Post $post, Request $request)
     {
-        //
+        $user = $request->user();
+        if ($user->id !== $post->user_id) {
+            return abort(403, 'Unauthorized action');
+        }
+        return new SurverResource($post);
     }
 
     /**
@@ -49,7 +61,9 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+        $data = $request->validated();
+        $post->update($data);
+        return new PostResource($post);
     }
 
     /**
@@ -58,8 +72,23 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post, Request $request)
     {
-        //
+        $user = $request->user();
+        if ($user->id !== $survey->user_id) {
+            return abort(403, 'Unauthorized action');
+        }
+        $post->delete();
+        return response('', 204);
+    }
+
+    public function clientIndex(Request $request)
+    {
+        return PostResource::collection(Post::paginate(10));
+    }
+
+    public function clientShow(Post $post, Request $request) 
+    {
+        return new PostResource($post);
     }
 }
