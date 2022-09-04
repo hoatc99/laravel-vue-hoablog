@@ -15,6 +15,8 @@ class CreateLikesTable extends Migration
     {
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\Post::class, 'post_id');
+            $table->foreignIdFor(\App\Models\User::class, 'user_id');
             $table->timestamps();
         });
     }
