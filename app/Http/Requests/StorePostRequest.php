@@ -19,7 +19,8 @@ class StorePostRequest extends FormRequest
     protected function prepareForValidation() 
     {
         $this->merge([
-            'user_id' => $this->user()->id
+            'user_id' => 1
+            // 'user_id' => $this->user()->id
         ]);
     }
 
@@ -37,7 +38,7 @@ class StorePostRequest extends FormRequest
             'image_url' => 'required|string|max:255',
             'summary' => 'required|string',
             'content' => 'required|string',
-            'is_active' => 'required|boolean'
+            'is_active' => 'required|boolean',
         ];
     }
 }

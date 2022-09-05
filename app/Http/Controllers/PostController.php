@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 
+use App\Http\Resources\Client\PostResource as ClientPostResource;
 use App\Http\Resources\PostResource;
 
 use App\Models\Post;
@@ -21,7 +22,8 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        return PostResource::collection(Post::where('user_id', $user->id)->paginate(10));
+        return PostResource::collection(Post::where('user_id', 1)->paginate(10));
+        // return PostResource::collection(Post::where('user_id', $user->id)->paginate(10));
     }
 
     /**
@@ -49,7 +51,7 @@ class PostController extends Controller
         if ($user->id !== $post->user_id) {
             return abort(403, 'Unauthorized action');
         }
-        return new SurverResource($post);
+        return new PostResource($post);
     }
 
     /**
@@ -75,20 +77,20 @@ class PostController extends Controller
     public function destroy(Post $post, Request $request)
     {
         $user = $request->user();
-        if ($user->id !== $survey->user_id) {
+        if ($user->id !== $post->user_id) {
             return abort(403, 'Unauthorized action');
         }
         $post->delete();
         return response('', 204);
     }
 
-    public function clientIndex(Request $request)
+    public function clientIndex()
     {
-        return PostResource::collection(Post::paginate(10));
+        return ClientPostResource::collection(Post::paginate(10));
     }
 
-    public function clientShow(Post $post, Request $request) 
+    public function clientShow(Post $post)
     {
-        return new PostResource($post);
+        return new ClientPostResource($post);
     }
 }

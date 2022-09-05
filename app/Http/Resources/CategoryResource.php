@@ -5,7 +5,9 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Nette\Utils\DateTime;
 
-class PostResource extends JsonResource
+use App\Http\Resources\PostResource;
+
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,19 +18,9 @@ class PostResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'category' => $this->category->name,
-            'user' => $this->user->fullname,
-            'title' => $this->title,
+            'name' => $this->name,
             'slug' => $this->slug,
-            'image_url' => $this->image_url,
-            'summary' => $this->summary,
-            'content' => $this->content,
-            'views' => $this->views,
-            'status' => $this->is_active,
-            'comments' => CommentResource::collection($this->comments),
-            'likes' => $this->likes->count(),
-            'tags' => $this->tags,
+            'description' => $this->description,
             'created_at' => (new DateTime($this->created_at))->format('Y-m-d H:i:s'),
             'updated_at' => (new DateTime($this->updated_at))->format('Y-m-d H:i:s'),
         ];

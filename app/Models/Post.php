@@ -36,6 +36,11 @@ class Post extends Model
             ->saveSlugsTo('slug');
     }
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function comments() {
         return $this->hasMany(Comment::class);
     }
